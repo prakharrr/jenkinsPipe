@@ -1,33 +1,17 @@
 node {
- 	
-    deleteDir()
+    
+  stage 'I am the Knight'
 
-    try {
-        stage ('Clone') {
-        	checkout scm
-        }
-        stage ('Build') {
-        	sh "echo 'shell scripts to build project...'"
-        }
-        stage ('Tests') {
-	        parallel 'static': {
-	            sh "echo 'shell scripts to run static tests...'"
-	        },
-	        'unit': {
-	            sh "echo 'shell scripts to run unit tests...'"
-	        },
-	        'integration': {
-	            sh "echo 'shell scripts to run integration tests...'"
-	        }
-        }
-      	stage ('Deploy') {
-      	    sh "echo 'This is the deploy stage'"
-            }
+  git 'https://github.com/prakharrr/jenkinsPipe'
+        
+  stage 'Package Docker image'
 
-      	}
-    } catch (err) {
-        currentBuild.result = 'FAILED'
-        throw err
-    }
+  def img = docker.build .
+
+  stage 'Docker build and run '
+  
+		docker build -t flaskapp . && docker run -it flask
+
+  }
+
 }
-
