@@ -10,7 +10,7 @@ node {
 
   stage 'Docker build and run '
   
-		docker build -t flaskapp . && docker run -it flaskapp
+		sh 'docker build -t flaskapp . && docker run -it flaskapp'
 
   }
 
