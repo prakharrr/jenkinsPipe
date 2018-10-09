@@ -1,22 +1,31 @@
-pipeline {
-    agent any
-    stages {
-        stage('Build Hello World') {
-            steps {
-                sh 'echo "Hello World"'
-                sh 'docker ps'
-                
-            }
-        }
-        stage('Production - Hello World'){
-            steps{
-                sh '''
-                    echo now=$(date + "%r") << hello.sh
-                    echo "Current Time is: $now" << hello.sh
-                '''
-                sh './hello.sh'
-    }
+node {
+ 	// Clean workspace before doing anything
+    deleteDir()
 
-            
+    try {
+        stage ('Clone') {
+        	checkout scm
         }
+        stage ('Build') {
+        	sh "echo 'shell scripts to build project...'"
+        }
+        stage ('Tests') {
+	        parallel 'static': {
+	            sh "echo 'shell scripts to run static tests...'"
+	        },
+	        'unit': {
+	            sh "echo 'shell scripts to run unit tests...'"
+	        },
+	        'integration': {
+	            sh "echo 'shell scripts to run integration tests...'"
+	        }
+        }
+      	stage ('Deploy') {
+            sh "echo 'shell scripts to deploy to server...'"
+      	}
+    } catch (err) {
+        currentBuild.result = 'FAILED'
+        throw err
     }
+}
+
