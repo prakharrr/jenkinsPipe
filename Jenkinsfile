@@ -1,5 +1,5 @@
 node {
- 	// Clean workspace before doing anything
+ 	
     deleteDir()
 
     try {
@@ -21,13 +21,7 @@ node {
 	        }
         }
       	stage ('Deploy') {
-      	    git url: "git@github.com:prakharrr/jenkinsPipe.git",
-                credentialsId: 'jenkins_ssh_key',
-                branch: master
-            steps{
-                sh 'git tag -a tagName -m "Pushing with Jenkins" '
-                sh 'git commit -am "merging with jenkinssss"'
-                sh 'git push origin master'
+      	    sh "echo 'This is the deploy stage'"
             }
 
       	}
